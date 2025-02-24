@@ -4,8 +4,7 @@ import { Star } from "lucide-react";
 interface PostData {
   title: string;
   engagementScore: number; // Rating out of 5
-  datePosted: string;
-  author: string;
+  datePosted: string
 }
 
 interface TableProps {
@@ -25,7 +24,7 @@ export const PostTable: React.FC<TableProps> = ({ data }) => {
               Engagement Score
             </th>
             <th className="px-4 py-2 border-b text-left text-gray-700 font-medium">
-              Date Posted/Author
+              Date Posted
             </th>
           </tr>
         </thead>
@@ -34,7 +33,7 @@ export const PostTable: React.FC<TableProps> = ({ data }) => {
             <tr key={index} className="hover:bg-gray-50">
               <td className="px-4 py-2 border-b text-gray-800">{post.title}</td>
               <td className="px-4 py-2 border-b">
-                <div className="flex items-center gap-1">
+                {/* <div className="flex items-center gap-1">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star
                       key={i}
@@ -43,11 +42,11 @@ export const PostTable: React.FC<TableProps> = ({ data }) => {
                       stroke={i < Math.ceil(post.engagementScore) ? "gold" : "gray"}
                     />
                   ))}
-                </div>
+                </div> */}
+                {post.engagementScore}
               </td>
               <td className="px-4 py-2 border-b text-gray-800">
                 <p>{post.datePosted}</p>
-                <p className="text-sm text-gray-500">{post.author}</p>
               </td>
             </tr>
           ))}

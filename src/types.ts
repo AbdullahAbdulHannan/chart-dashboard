@@ -4,52 +4,61 @@ export interface PlatformData {
   icon: string;
   followers: number;
   new_following: number;
-  growth: number;
-  chartData: {
-    name: string;
-    posts: number;
-    stories: number;
-    new_following: number;
-    likes: number;
-    share: number;
-    comments: number;
-  }[];
-  donutData: {
-    name: string;
-    value: number;
-    color: string;
-  }[];
+  views: number;
+  chartData: ChartDataPoint[];
+  donutData: DonutDataPoint[];
 }
 
-export interface ComparisonPlatform {
-  donutDataPlatform: {
-    name: string;
-    value: number;
-    color: string;
-  }[];
-  barDataPlatform: {
-    name: string;
-    facebook: number;
-    linkedin: number;
-    twitter: number;
-  }[];
-  lineDataPlatform: {
-    name: string;
-    facebook: number;
-    linkedin: number;
-    twitter: number;
-  }[];
+export interface ChartDataPoint {
+  name: string;
+  posts: number;
+  reels: number;
+  likes: number;
+  comments: number;
+  share: number;
+}
+
+export interface DonutDataPoint {
+  name: string;
+  value: number;
+  color: string;
 }
 
 export interface DisplayOptions {
   platforms: string[];
   showGraphs: boolean;
   showNumbers: boolean;
-  showTable:boolean;
+  showTable: boolean;
   selectedPlatform: string;
   showAudienceEngagement: boolean;
   showPostPerformance: boolean;
   showActionsOnPost: boolean;
-  comparisonPlatforms?: string[];
-  comparisonCharts?: string[];
+  comparisonPlatforms: string[];
+  comparisonCharts: string[];
+}
+
+export interface ComparisonPlatform {
+  donutDataPlatform: DonutDataPoint[];
+  lineDataPlatform: LineDataPoint[];
+  barDataPlatform: BarDataPoint[];
+}
+
+export interface LineDataPoint {
+  name: string;
+  linkedin: number;
+  facebook: number;
+  instagram: number;
+}
+
+export interface BarDataPoint {
+  name: string;
+  linkedin: number;
+  facebook: number;
+  instagram: number;
+}
+
+export interface PostData {
+  title: string;
+  engagementScore: number;
+  datePosted: string;
 }

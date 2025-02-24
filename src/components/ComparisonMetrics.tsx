@@ -29,6 +29,7 @@ const ComparisonMetrics = ({ data, selectedPlatforms, selectedCharts }: Comparis
     });
     return filtered;
   });
+  console.log("Facebook Line Data:", filterLineData);
 
   return (
     <div className="space-y-8">
@@ -97,6 +98,7 @@ const ComparisonMetrics = ({ data, selectedPlatforms, selectedCharts }: Comparis
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={filterLineData}>
                 <CartesianGrid stroke="#faf5f5" strokeDasharray="5 5" />
+                <XAxis dataKey="name"/>
                 <Tooltip />
                 <Legend />
                 {selectedPlatforms.map((platform, index) => (

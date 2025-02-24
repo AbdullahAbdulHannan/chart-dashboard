@@ -21,7 +21,6 @@ export function PlatformMetrics({ data, showGraphs, showNumbers }: PlatformMetri
             <div>
               <p className='text-gray-400 font-semibold'>Total Followers</p>
               <p className="text-3xl font-bold text-gray-900">{data.followers.toLocaleString()}</p>
-              <p className="text-sm text-green-500">+5%</p>
             </div>
             
             <div className="flex items-center gap-2">
@@ -33,7 +32,6 @@ export function PlatformMetrics({ data, showGraphs, showNumbers }: PlatformMetri
          <div>
               <p className='text-gray-400 font-semibold'>New Following</p>
               <p className="text-3xl font-bold text-gray-900">{data.new_following.toLocaleString()}</p>
-              <p className="text-sm text-red-500">2%</p>
             </div>
             <div className="flex-1">
               <svg className="w-32 h-16">
@@ -47,8 +45,7 @@ export function PlatformMetrics({ data, showGraphs, showNumbers }: PlatformMetri
             </div>
                 <div>
                       <p className='text-gray-400 font-semibold'>Total Views</p>
-                      <p className="text-3xl font-bold text-gray-900">{data.new_following.toLocaleString()}</p>
-                      <p className="text-sm text-red-500">8%</p>
+                      <p className="text-3xl font-bold text-gray-900">{data.views.toLocaleString()}</p>
                     </div>
             
             <div className="flex gap-1">
