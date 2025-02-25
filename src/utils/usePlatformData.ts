@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { fetchInstagramData } from '../components/fetch';
-import { fetchBarData, fetchFacebookData } from '../components/fb';
+import { fetchInstagramData } from '../apis/ig';
+import { fetchBarData, fetchFacebookData } from '../apis/fb';
 import { generateChartData, generateLineDataPlatform } from './dataTransformers'
 import { PlatformData, ComparisonPlatform } from '../types';
 import { getCountsByDate, getPostMetricsByDate, getIgPostMetricsByDate, getLinkedInCountsByDate, getInPostMetricsByDate } from '../components/DetailedMetrics';
-import fetchLinkedInData from '../components/in';
+import fetchLinkedInData from '../apis/in';
 
 let barData:any;
 fetchBarData().then((data) => {
@@ -24,7 +24,7 @@ export const usePlatformData = () => {
       const ig_data = await fetchInstagramData();
       const fb_data = await fetchFacebookData();
       const in_data=await fetchLinkedInData()
-console.log(in_data);
+console.log(fb_data);
 
       const posts = ig_data.posts.data;
       let reelsCount = 0;
@@ -55,7 +55,7 @@ const linkedInReelsByDate = getLinkedInCountsByDate(
   
   
       // const linkedInPostMetricsByDate = getPostMetricsByDate(in_data.totalPosts.elements, "publishedAt");
-  console.log(in_postMetricsByDate);
+  console.log(in_data);
   
       // Generate Chart Data
       const linkedInChartData = generateChartData(linkedInPostsByDate, linkedInReelsByDate, in_postMetricsByDate);
@@ -68,7 +68,7 @@ const linkedInReelsByDate = getLinkedInCountsByDate(
           name: 'Facebook',
           icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/2021_Facebook_icon.svg/2048px-2021_Facebook_icon.svg.png',
           followers: fb_data.followers.followers_count,
-          new_following: fb_data.dailyLikes.data[0].values[0].value,
+          new_following: fb_data.dailyFollow.data[0].values[fb_data.dailyFollow.data[0].values.length-1].value,
           views: fb_data.dailyViews.data[0].values[0].value,
           chartData: facebookChartData,
           donutData: [
@@ -120,13 +120,23 @@ const linkedInReelsByDate = getLinkedInCountsByDate(
           engagementScore: (post.reactions?.summary?.total_count || 0) + (post.comments?.summary?.total_count || 0),
           datePosted: post.created_time?.split("T")[0] || "Unknown Date",
         })),
-        linkedin: [
-          { title: in_data.totalPosts.elements[0].commentary?in_data.totalPosts.elements[0].commentary.split(" ").slice(0, 5).join(" ") + "..." : "No title for this post", engagementScore: 120, datePosted: new Date(in_data.totalPosts?.elements[0]?.publishedAt).toLocaleDateString()
-          },
-          { title: in_data.totalPosts.elements[1].commentary?in_data.totalPosts.elements[1].commentary.split(" ").slice(0, 5).join(" ") + "..." : "No title for this post", engagementScore: 90, datePosted: new Date(in_data.totalPosts?.elements[1]?.publishedAt).toLocaleDateString() },
-          { title: in_data.totalPosts.elements[2].commentary?in_data.totalPosts.elements[2].commentary.split(" ").slice(0, 5).join(" ") + "..." : "No title for this post", engagementScore: 75, datePosted: new Date(in_data.totalPosts?.elements[2]?.publishedAt).toLocaleDateString() },
-        ],
+        linkedin: in_data.postEngagements.slice(0, 3).map((post, index) => {
+          const commentCount = post.data.commentSummary?.count || 0;
+          const reactionCount = Object.values(post.data.reactionSummaries || {}).reduce(
+            (sum, reaction) => sum + (reaction.count || 0),
+            0
+          );
+      
+          return {
+            title: in_data.totalPosts.elements[index]?.commentary
+              ? in_data.totalPosts.elements[index].commentary.split(" ").slice(0, 5).join(" ") + "..."
+              : "No title for this post",
+            engagementScore: commentCount + reactionCount,
+            datePosted: new Date(in_data.totalPosts?.elements[index]?.publishedAt).toLocaleDateString(),
+          };
+        }),
       };
+      
 
       const lineDataPlatform = generateLineDataPlatform(fb_postMetricsByDate, ig_postMetricsByDate,in_postMetricsByDate);
 

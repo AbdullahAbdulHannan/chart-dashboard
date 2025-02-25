@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:5000/api/linkedin';
+const BASE_URL = 'https://linkedinapi-kappa.vercel.app/api/linkedin';
 
 // Helper function to fetch LinkedIn data
 const fetchLinkedInData = async () => {
@@ -11,7 +11,7 @@ const fetchLinkedInData = async () => {
       pageViews: `${BASE_URL}/page-views`,
       totalPosts: `${BASE_URL}/total-posts`,
       engagements: `${BASE_URL}/engagements`,
-      // totalReels: `${BASE_URL}/total-reels`,
+      postEngagements: `${BASE_URL}/post-engagements`,
     };
 
     // Fetch all data in parallel

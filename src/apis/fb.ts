@@ -52,7 +52,8 @@ const buildFacebookApiUrls = () => {
     filteredPosts: `https://graph.facebook.com/v22.0/${pageId}/feed?fields=created_time,message,id,reactions.summary(total_count),shares,comments.summary(total_count)&since=${thirtyDaysAgo}&until=${now}&access_token=${accessToken}`,
     filteredReels: `https://graph.facebook.com/v22.0/${pageId}/videos?type=uploaded&since=${thirtyDaysAgo}&until=${now}&access_token=${accessToken}`,
     postEngagements: `https://graph.facebook.com/v22.0/${pageId}/feed?fields=created_time,message,id,reactions.summary(total_count),shares,comments.summary(total_count)&access_token=${accessToken}`,
-    dailyReactions: `https://graph.facebook.com/v22.0/${pageId}/insights?metric=page_actions_post_reactions_total&period=days_28&access_token=${accessToken}`
+    dailyReactions: `https://graph.facebook.com/v22.0/${pageId}/insights?metric=page_actions_post_reactions_total&period=days_28&access_token=${accessToken}`,
+   dailyFollow:`https://graph.facebook.com/v19.0/198771776656112/insights/page_daily_follows?since=${thirtyDaysAgo}&until=${yesterday}&period=day&access_token=EAASbD3SBqFoBO7CgUP9vZCj4Ut3vBl5DkNQXRam2by8kH5TXOFdmyqSLO0EEhKIA6RkbNJzkZBqJZAjVyUwZAMoeYZAeXFTedvlBF04p8a7AhdTdeaOPLblXKt1Dtgoqqcp1YQIDtacnZCNENOmZCP5JyA40bwITn3kO5feSD2kuyEpldqaxXlqurtWrSys5JULs2Q8SgfmXzgDAnEZD`
   } as const;
 };
 
@@ -60,6 +61,7 @@ const buildFacebookApiUrls = () => {
 export interface FacebookData {
   followers: any;
   dailyLikes: any;
+  dailyFollow:any;
   dailyViews: any;
   totalPosts: any;
   totalReels: any;
