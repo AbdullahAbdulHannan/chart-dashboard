@@ -24,7 +24,7 @@ export const usePlatformData = () => {
       const ig_data = await fetchInstagramData();
       const fb_data = await fetchFacebookData();
       const in_data=await fetchLinkedInData()
-console.log(fb_data);
+console.log(ig_data);
 
       const posts = ig_data.posts.data;
       let reelsCount = 0;
@@ -83,7 +83,7 @@ const linkedInReelsByDate = getLinkedInCountsByDate(
           icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/2048px-Instagram_logo_2016.svg.png',
           followers: ig_data.followers.followers_count,
           new_following: 5,
-          views: ig_data.views.data[0].total_value.value||0,
+          views: ig_data.views.data[0]?.total_value?.value||0,
           chartData: instagramChartData,
           donutData: [
             { name: 'Posts', value: postsCount, color: '#FF5733' },
