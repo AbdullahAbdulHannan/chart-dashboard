@@ -2,17 +2,90 @@ import axios from 'axios';
 
 // Facebook Page ID and Access Token
 const pageId = '198771776656112';
-const accessToken = 'EAASbD3SBqFoBO7CgUP9vZCj4Ut3vBl5DkNQXRam2by8kH5TXOFdmyqSLO0EEhKIA6RkbNJzkZBqJZAjVyUwZAMoeYZAeXFTedvlBF04p8a7AhdTdeaOPLblXKt1Dtgoqqcp1YQIDtacnZCNENOmZCP5JyA40bwITn3kO5feSD2kuyEpldqaxXlqurtWrSys5JULs2Q8SgfmXzgDAnEZD';
+const accessToken = 'EAASbD3SBqFoBO04ZCM9mBXanMAC5XXY4SZBrTWp3wQAmhQ7XLcLumFMduZCAty6bnIrobGcm2KX9r5kE3mVZAI5esETT0XycHzozBQ9mR1N7uvmvA5dCHwnYlitKM8uryZBlXEKZAKdeNZC6a8qUu7dliKoxA3j0zC7dFcKyjbsO1GyAQXqzGnPUzqXCYtYdiwZD';
+
+// Fb.ts
+const uploadMediaToFacebook = async (file: File) => {
+  try {
+    const formData = new FormData();
+    formData.append('source', file);
+    formData.append('published', 'false');
+    formData.append('access_token', accessToken);
+
+    // Determine endpoint based on file type
+    const endpoint = file.type.startsWith('video') 
+      ? `${pageId}/videos` 
+      : `${pageId}/photos`;
+
+    const response = await axios.post(
+      `https://graph.facebook.com/v18.0/${endpoint}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    return response.data.id;
+  } catch (error:any) {
+    console.error('Error uploading media:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const postToFacebook = async (message: string, mediaFiles?: File[]) => {
+  try {
+    let mediaIds: string[] = [];
+
+    if (mediaFiles && mediaFiles.length > 0) {
+      // Upload each image and get its media ID
+      for (const file of mediaFiles) {
+        const mediaId = await uploadMediaToFacebook(file);
+        mediaIds.push(mediaId);
+      }
+    }
+
+    const postData: any = {
+      message,
+      access_token: accessToken,
+    };
+
+    // Attach multiple media
+    if (mediaIds.length > 0) {
+      postData.attached_media = mediaIds.map(id => ({ media_fbid: id }));
+    }
+
+    // Send the final post request
+    const response = await axios.post(
+      `https://graph.facebook.com/v18.0/${pageId}/feed`,
+      postData
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Error posting to Facebook:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+
 
 // Function to get Unix timestamps
 const getTimeRanges = () => {
-  const now = Math.floor(Date.now() / 1000);
-  const thirtyDaysAgo = now - 30 * 24 * 60 * 60;
-  const yesterday = now - 24 * 60 * 60;
-  const startOfToday = Math.floor(new Date().setHours(0, 0, 0, 0) / 1000); // Start of today
-  const currentTime = Math.floor(Date.now() / 1000); // Current time
-  return { now, thirtyDaysAgo, yesterday,startOfToday,currentTime };
+  const now = new Date();
+  const nowUTC = Math.floor(now.getTime() / 1000); // Convert to UTC timestamp
+
+  const thirtyDaysAgoUTC = nowUTC - 30 * 24 * 60 * 60;
+  const yesterdayUTC = nowUTC - 24 * 60 * 60;
+
+  const startOfTodayUTC = Math.floor(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) / 1000
+  );
+  const currentTimeUTC = nowUTC;
+
+  return { now: nowUTC, thirtyDaysAgo: thirtyDaysAgoUTC, yesterday: yesterdayUTC, startOfToday: startOfTodayUTC, currentTime: currentTimeUTC };
 };
+
 function getMonthTimestamps(monthsAgo:any) {
   const now = new Date();
   now.setMonth(now.getMonth() - monthsAgo);  // Move back by monthsAgo

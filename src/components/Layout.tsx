@@ -2,8 +2,8 @@ import React from 'react';
 import { Info, TrendingUp } from 'lucide-react';
 
 interface LayoutProps {
-  activeTab: 'overview' | 'comparison';
-  setActiveTab: (tab: 'overview' | 'comparison') => void;
+  activeTab: 'overview' | 'comparison'|'post';
+  setActiveTab: (tab: 'overview' | 'comparison'|'post') => void;
   children: React.ReactNode;
 }
 
@@ -34,6 +34,15 @@ export const Layout: React.FC<LayoutProps> = ({ activeTab, setActiveTab, childre
                 >
                   <TrendingUp />
                   Comparison
+                </li>
+                <li
+                  className={`flex items-center gap-2 font-medium px-4 py-2 cursor-pointer rounded ${
+                    activeTab === 'post' ? 'bg-purple-100 text-purple-600' : 'text-gray-500'
+                  }`}
+                  onClick={() => setActiveTab('post')}
+                >
+                  <TrendingUp />
+                  Post
                 </li>
               </ul>
             </div>

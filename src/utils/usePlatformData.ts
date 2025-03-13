@@ -3,13 +3,13 @@ import { fetchInstagramData } from '../apis/ig';
 import { fetchBarData, fetchFacebookData } from '../apis/fb';
 import { generateChartData, generateLineDataPlatform } from './dataTransformers'
 import { PlatformData, ComparisonPlatform } from '../types';
-import { getCountsByDate, getPostMetricsByDate, getIgPostMetricsByDate, getLinkedInCountsByDate, getInPostMetricsByDate } from '../components/DetailedMetrics';
+import { getCountsByDate, getPostMetricsByDate, getIgPostMetricsByDate, getLinkedInCountsByDate, getInPostMetricsByDate, getNewFollowCountsByDate } from '../components/DetailedMetrics';
 import fetchLinkedInData from '../apis/in';
 
 let barData:any;
 fetchBarData().then((data) => {
   barData = data;
-  console.log(barData); // Data is now assigned
+  console.log(barData); 
 });
 
 export const usePlatformData = () => {
@@ -38,6 +38,8 @@ console.log(ig_data);
         }
       });
 
+      const fb_newFollowByDate = getNewFollowCountsByDate(fb_data.dailyFollow.data[0].values, "end_time");
+      const ig_newFollowByDate = getNewFollowCountsByDate(ig_data?.dailyFollow.data[0]?.values, "end_time");
       const fb_postsByDate = getCountsByDate(fb_data.filteredPosts, "created_time");
       const fb_reelsByDate = getCountsByDate(fb_data.filteredReels, "updated_time");
       const ig_postsByDate = getCountsByDate(ig_data.filteredPosts, "timestamp");
@@ -55,12 +57,13 @@ const linkedInReelsByDate = getLinkedInCountsByDate(
   
   
       // const linkedInPostMetricsByDate = getPostMetricsByDate(in_data.totalPosts.elements, "publishedAt");
-  console.log(in_data);
+  console.log(fb_newFollowByDate);
+  console.log(fb_data);
   
       // Generate Chart Data
-      const linkedInChartData = generateChartData(linkedInPostsByDate, linkedInReelsByDate, in_postMetricsByDate);
-      const facebookChartData = generateChartData(fb_postsByDate, fb_reelsByDate, fb_postMetricsByDate);
-      const instagramChartData = generateChartData(ig_postsByDate, ig_reelsByDate, ig_postMetricsByDate);
+      const linkedInChartData = generateChartData(linkedInPostsByDate, linkedInReelsByDate, in_postMetricsByDate,fb_newFollowByDate);
+      const facebookChartData = generateChartData(fb_postsByDate, fb_reelsByDate, fb_postMetricsByDate,fb_newFollowByDate);
+      const instagramChartData = generateChartData(ig_postsByDate, ig_reelsByDate, ig_postMetricsByDate,ig_newFollowByDate);
 
       const exampleData: PlatformData[] = [
         {
@@ -82,7 +85,7 @@ const linkedInReelsByDate = getLinkedInCountsByDate(
           name: 'Instagram',
           icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/2048px-Instagram_logo_2016.svg.png',
           followers: ig_data.followers.followers_count,
-          new_following: 5,
+          new_following: ig_data.dailyFollow.data[0]?.values[ig_data.dailyFollow.data[0]?.values.length-1].value,
           views: ig_data.views.data[0]?.total_value?.value||0,
           chartData: instagramChartData,
           donutData: [

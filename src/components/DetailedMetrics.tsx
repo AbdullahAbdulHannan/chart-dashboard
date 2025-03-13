@@ -39,6 +39,25 @@ export const getLinkedInCountsByDate = (filteredData: any, timeKey = "publishedA
 
   return counts;
 };
+export const getNewFollowCountsByDate = (filteredData: any, timeKey = "created_time", filterType?: string) => {
+  const counts: Record<string, number> = {};
+
+  if (!filteredData?.length) return counts; // Ensure there's data
+
+  filteredData.forEach((item: any) => { // Directly iterate as filteredData is an array
+    if (!item[timeKey]) return;
+
+    const date = new Date(item[timeKey]);
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const month = monthNames[date.getUTCMonth()];
+    const day = date.getUTCDate().toString().padStart(2, '0');
+    const dateString = `${month}-${day}`;
+
+    counts[dateString] = (counts[dateString] || 0) + (item.value || 0); // Sum values correctly
+  });
+
+  return counts;
+};
 
 export const getInPostMetricsByDate = (filteredData: any) => {
   const counts: Record<string, any> = {};
@@ -58,14 +77,12 @@ console.log('f',filteredData);
       if (!stats) return;
 
       if (!counts[dateString]) {
-        counts[dateString] = { likes: 0, comments: 0, shares: 0, impressions: 0, engagements: 0 };
+        counts[dateString] = { likes: 0, comments: 0, shares: 0};
       }
 
       counts[dateString].likes += stats.likeCount || 0;
       counts[dateString].comments += stats.commentCount || 0;
       counts[dateString].shares += stats.shareCount || 0;
-      counts[dateString].impressions += stats.impressionCount || 0;
-      counts[dateString].engagements += stats.engagement || 0;
     });
 
     counts[dateString].total =
@@ -200,14 +217,21 @@ export function DetailedMetrics({ data, showGraphs, options }: DetailedMetricsPr
       type="monotone"
       dataKey="posts"
       stroke="#c8a2c8"
-      strokeWidth={2}
+      strokeWidth={1}
       dot={false}
     />
     <Line
       type="monotone"
       dataKey="reels"
       stroke="#7b68ee"
-      strokeWidth={2}
+      strokeWidth={1}
+      dot={false}
+    />
+    <Line
+      type="monotone"
+      dataKey="new_following"
+      stroke="skyblue"
+      strokeWidth={1}
       dot={false}
     />
   </LineChart>

@@ -1,6 +1,6 @@
 import { ChartDataPoint } from '../types';
 
-export const generateChartData = (postsByDate: any, reelsByDate: any, postMetricsByDate: any): ChartDataPoint[] => {
+export const generateChartData = (postsByDate: any, reelsByDate: any, postMetricsByDate: any,newFollow:any): ChartDataPoint[] => {
   const chartData = [];
   const today = new Date();
   
@@ -16,6 +16,7 @@ export const generateChartData = (postsByDate: any, reelsByDate: any, postMetric
       name: dateString,
       posts: postsByDate[dateString] || 0,
       reels: reelsByDate[dateString] || 0,
+      new_following:newFollow[dateString] || 0,
       likes: postMetricsByDate[dateString]?.likes || 0,
       comments: postMetricsByDate[dateString]?.comments || 0,
       share: postMetricsByDate[dateString]?.shares || 0,

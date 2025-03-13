@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://linkedinapi-kappa.vercel.app/api/linkedin';
+const BASE_URL = 'https://test-five-lac-39.vercel.app/api/linkedin';
 
 // Helper function to fetch LinkedIn data
 const fetchLinkedInData = async () => {
@@ -30,5 +30,20 @@ const fetchLinkedInData = async () => {
     throw error;
   }
 };
+export const postToLinkedIn = async (text:any, images = [], videos = []) => {
+  try {
+    const formData = new FormData();
+    if (text) formData.append('text', text);
+    images.forEach((image) => formData.append('images', image));
+    videos.forEach((video) => formData.append('videos', video));
 
+    const response = await axios.post(`${BASE_URL}/post-text`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  } catch (error:any) {
+    console.error('Error posting to LinkedIn:', error.response?.data || error);
+    throw error;
+  }
+};
 export default fetchLinkedInData;

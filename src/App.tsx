@@ -4,9 +4,10 @@ import { Overview } from './components/Overview';
 import { Comparison } from './components/Comparison';
 import { usePlatformData } from './utils/usePlatformData';
 import { DisplayOptions } from './types';
+import { Post } from './components/Post';
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'comparison'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'comparison' |'post'>('overview');
   const platformData = usePlatformData();
   
   const [displayOptions, setDisplayOptions] = useState<DisplayOptions>({
@@ -42,14 +43,14 @@ function App() {
           filteredData={filteredData}
           sampleData={sampleData}
         />
-      ) : (
+      ) :activeTab=='comparison'? (
         <Comparison
           displayOptions={displayOptions}
           setDisplayOptions={setDisplayOptions}
           availablePlatforms={availablePlatforms}
           comparePlatform={comparePlatform}
         />
-      )}
+      ):<Post/>}
     </Layout>
   );
 }
